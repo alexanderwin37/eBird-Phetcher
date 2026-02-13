@@ -1,0 +1,27 @@
+{
+  "name": "typescript-template",
+  "version": "0.1.0",
+  "description": "A barebones TypeScript template project",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "eslint src/ --fix && prettier --write src/ && tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
+    "format": "prettier --write src/"
+  },
+  "keywords": [],
+  "license": "MIT",
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@types/node": "^25.2.3",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.8.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.55.0"
+  }
+}
