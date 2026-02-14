@@ -6,7 +6,9 @@ const ENV_PATH = join(import.meta.dirname, "..", ".env");
 
 export function loadEnv(): EnvConfig {
   if (!existsSync(ENV_PATH)) {
-    console.error("Missing .env file. Create one with:\n  USER_AGENT=...\n  EBIRD_COOKIE=...");
+    console.error(
+      "Missing .env file. Create one with:\n  USER_AGENT=...\n  EBIRD_COOKIE=...",
+    );
     process.exit(1);
   }
   const env = readFileSync(ENV_PATH, "utf-8");

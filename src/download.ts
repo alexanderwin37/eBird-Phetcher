@@ -4,14 +4,19 @@ import { join } from "path";
 import type { PhotoRow, EnvConfig } from "./types.js";
 
 const OUTPUT_DIR = join(import.meta.dirname, "..", "inout", "photos");
-const ORIGINAL_URL_BASE = "https://macaulaylibrary.org/internal/v1/original-url";
+const ORIGINAL_URL_BASE =
+  "https://macaulaylibrary.org/internal/v1/original-url";
 
 export function sanitize(name: string): string {
   return name.replace(/[^a-zA-Z0-9-]/g, "_").replace(/_+/g, "_");
 }
 
 export function getFilePath(row: PhotoRow): string {
-  return join(OUTPUT_DIR, row.date, `${sanitize(row.commonName)}_ML${row.mlNumber}.jpg`);
+  return join(
+    OUTPUT_DIR,
+    row.date,
+    `${sanitize(row.commonName)}_ML${row.mlNumber}.jpg`,
+  );
 }
 
 export async function downloadPhoto(
@@ -25,7 +30,9 @@ export async function downloadPhoto(
 
   mkdirSync(dirPath, { recursive: true });
 
-  console.log(`[${index + 1}/${total}] Downloading ${row.commonName} ML${row.mlNumber}...`);
+  console.log(
+    `[${index + 1}/${total}] Downloading ${row.commonName} ML${row.mlNumber}...`,
+  );
 
   const urlResponse = await fetch(`${ORIGINAL_URL_BASE}/${row.mlNumber}`, {
     headers: { Cookie: env.cookie, "User-Agent": env.userAgent },

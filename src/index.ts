@@ -20,7 +20,9 @@ async function main(): Promise<void> {
     const row = rows[i];
 
     if (existsSync(getFilePath(row))) {
-      console.log(`[${i + 1}/${rows.length}] Skipping ${row.commonName} ML${row.mlNumber} (exists)`);
+      console.log(
+        `[${i + 1}/${rows.length}] Skipping ${row.commonName} ML${row.mlNumber} (exists)`,
+      );
       skipped++;
     } else {
       try {
@@ -38,7 +40,9 @@ async function main(): Promise<void> {
     }
   }
 
-  console.log(`\nDone! Downloaded: ${downloaded}, Skipped: ${skipped}, Failed: ${failed}`);
+  console.log(
+    `\nDone! Downloaded: ${downloaded}, Skipped: ${skipped}, Failed: ${failed}`,
+  );
 }
 
 main();
