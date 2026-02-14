@@ -2,6 +2,7 @@ import { existsSync } from "fs";
 import { loadEnv } from "./env.js";
 import { parseCSV } from "./csv.js";
 import { downloadPhoto, getFilePath } from "./download.js";
+import { randomDelay } from "./delay.js";
 
 async function main(): Promise<void> {
   const env = loadEnv();
@@ -29,6 +30,7 @@ async function main(): Promise<void> {
         } else {
           failed++;
         }
+        await randomDelay();
       } catch (err) {
         console.error(`  Error: ${err}`);
         failed++;

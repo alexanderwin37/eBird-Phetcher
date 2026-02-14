@@ -5,17 +5,6 @@ import type { PhotoRow, EnvConfig } from "./types.js";
 
 const OUTPUT_DIR = join(import.meta.dirname, "..", "inout", "photos");
 const ORIGINAL_URL_BASE = "https://macaulaylibrary.org/internal/v1/original-url";
-const DELAY_MIN_MS = 400;
-const DELAY_MAX_MS = 800;
-
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-async function randomDelay(): Promise<void> {
-  const delay = DELAY_MIN_MS + Math.random() * (DELAY_MAX_MS - DELAY_MIN_MS);
-  await sleep(delay);
-}
 
 export function sanitize(name: string): string {
   return name.replace(/[^a-zA-Z0-9-]/g, "_").replace(/_+/g, "_");
@@ -69,6 +58,5 @@ export async function downloadPhoto(
 
   const buffer = Buffer.from(await imageResponse.arrayBuffer());
   await writeFile(filePath, buffer);
-  await randomDelay();
   return true;
 }
