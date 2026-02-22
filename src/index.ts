@@ -1,8 +1,16 @@
 import { existsSync } from "fs";
 import { loadEnv } from "./env.js";
 import { parseCSV } from "./csv.js";
-import { downloadPhoto, getFilePath } from "./download.js";
+import { downloadRow, getFilePath } from "./download.js";
 import { randomDelay } from "./delay.js";
+import { closeExiftool } from "./exif.js";
+
+for (const signal of ["SIGINT", "SIGTERM"]) {
+  process.on(signal, async () => {
+    await closeExiftool();
+    process.exit(0);
+  });
+}
 
 async function main(): Promise<void> {
   const env = loadEnv();
@@ -16,33 +24,36 @@ async function main(): Promise<void> {
   let skipped = 0;
   let failed = 0;
 
-  for (let i = 0; i < rows.length; i++) {
-    const row = rows[i];
+  try {
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
 
-    if (existsSync(getFilePath(row))) {
-      console.log(
-        `[${i + 1}/${rows.length}] Skipping ${row.commonName} ML${row.mlNumber} (exists)`,
-      );
-      skipped++;
-    } else {
-      try {
-        const success = await downloadPhoto(row, i, rows.length, env);
-        if (success) {
-          downloaded++;
-        } else {
+      if (existsSync(getFilePath(row))) {
+        console.log(
+          `[${i + 1}/${rows.length}] Skipping ${row.commonName} ML${row.mlNumber} (exists)`,
+        );
+        skipped++;
+      } else {
+        try {
+          const success = await downloadRow(row, i, rows.length, env);
+          if (success) {
+            downloaded++;
+          } else {
+            failed++;
+          }
+          await randomDelay();
+        } catch (err) {
+          console.error(`  Error: ${err}`);
           failed++;
         }
-        await randomDelay();
-      } catch (err) {
-        console.error(`  Error: ${err}`);
-        failed++;
       }
     }
+  } finally {
+    console.log(
+      `\nDone! Downloaded: ${downloaded}, Skipped: ${skipped}, Failed: ${failed}`,
+    );
+    await closeExiftool();
   }
-
-  console.log(
-    `\nDone! Downloaded: ${downloaded}, Skipped: ${skipped}, Failed: ${failed}`,
-  );
 }
 
 main();

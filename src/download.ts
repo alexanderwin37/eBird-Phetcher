@@ -2,6 +2,7 @@ import { mkdirSync } from "fs";
 import { writeFile } from "fs/promises";
 import { join } from "path";
 import type { PhotoRow, EnvConfig } from "./types.js";
+import { writeExifIfMissing } from "./exif.js";
 
 const OUTPUT_DIR = join(import.meta.dirname, "..", "inout", "photos");
 const ORIGINAL_URL_BASE =
@@ -19,7 +20,7 @@ export function getFilePath(row: PhotoRow): string {
   );
 }
 
-export async function downloadPhoto(
+export async function downloadRow(
   row: PhotoRow,
   index: number,
   total: number,
@@ -65,5 +66,6 @@ export async function downloadPhoto(
 
   const buffer = Buffer.from(await imageResponse.arrayBuffer());
   await writeFile(filePath, buffer);
+  await writeExifIfMissing(filePath, row);
   return true;
 }

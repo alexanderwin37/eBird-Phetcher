@@ -13,9 +13,12 @@ export async function parseCSV(): Promise<PhotoRow[]> {
       .on("data", (row: Record<string, string>) => {
         const mlNumber = row["ML Catalog Number"]?.trim();
         const date = row["Date"]?.trim();
+        const time = row["Time"]?.trim() || "";
         const commonName = row["Common Name"]?.trim();
+        const latitude = parseFloat(row["Latitude"] || "");
+        const longitude = parseFloat(row["Longitude"] || "");
         if (mlNumber && date && commonName) {
-          rows.push({ mlNumber, date, commonName });
+          rows.push({ mlNumber, date, time, commonName, latitude, longitude });
         }
       })
       .on("end", () => resolve(rows))
