@@ -4,6 +4,9 @@ import { parseCSV } from "./csv.js";
 import { downloadRow, getFilePath } from "./download.js";
 import { randomDelay } from "./delay.js";
 import { closeExiftool } from "./exif.js";
+import { MediaFormat } from "./types.js";
+
+const PROCESS_FORMATS: MediaFormat[] = [MediaFormat.Photo];
 
 for (const signal of ["SIGINT", "SIGTERM"]) {
   process.on(signal, async () => {
@@ -18,21 +21,30 @@ async function main(): Promise<void> {
 
   console.log("Parsing CSV...");
   const rows = await parseCSV();
-  console.log(`Found ${rows.length} photos to download.\n`);
+  console.log(`Found ${rows.length} total rows.\n`);
 
   let downloaded = 0;
   let skipped = 0;
+  let duplicates = 0;
   let failed = 0;
 
   try {
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i];
 
-      if (existsSync(getFilePath(row))) {
+      if (!PROCESS_FORMATS.includes(row.format)) {
         console.log(
-          `[${i + 1}/${rows.length}] Skipping ${row.commonName} ML${row.mlNumber} (exists)`,
+          `[${i + 1}/${rows.length}] Skipping (${row.format}) ${row.commonName} ML${row.mlNumber}`,
         );
         skipped++;
+        continue;
+      }
+
+      if (existsSync(getFilePath(row))) {
+        console.log(
+          `[${i + 1}/${rows.length}] Skipping (exists) ${row.commonName} ML${row.mlNumber}`,
+        );
+        duplicates++;
       } else {
         try {
           const success = await downloadRow(row, i, rows.length, env);
@@ -49,9 +61,11 @@ async function main(): Promise<void> {
       }
     }
   } finally {
-    console.log(
-      `\nDone! Downloaded: ${downloaded}, Skipped: ${skipped}, Failed: ${failed}`,
-    );
+    console.log(`\nDone!`);
+    console.log(`  Downloaded: ${downloaded}`);
+    console.log(`  Duplicates:    ${duplicates}`);
+    console.log(`  Skipped:    ${skipped}`);
+    console.log(`  Failed:     ${failed}`);
     await closeExiftool();
   }
 }

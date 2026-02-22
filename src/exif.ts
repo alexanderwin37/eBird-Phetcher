@@ -1,9 +1,9 @@
 import { exiftool } from "exiftool-vendored";
-import type { PhotoRow } from "./types.js";
+import type { MediaRow } from "./types.js";
 
 export async function writeExifIfMissing(
   filePath: string,
-  row: PhotoRow,
+  row: MediaRow,
 ): Promise<void> {
   const existing = await exiftool.read(filePath);
   const tags: Record<string, unknown> = {};

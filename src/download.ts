@@ -1,7 +1,7 @@
 import { mkdirSync } from "fs";
 import { writeFile } from "fs/promises";
 import { join } from "path";
-import type { PhotoRow, EnvConfig } from "./types.js";
+import type { MediaRow, EnvConfig } from "./types.js";
 import { writeExifIfMissing } from "./exif.js";
 
 const OUTPUT_DIR = join(import.meta.dirname, "..", "inout", "photos");
@@ -12,7 +12,7 @@ export function sanitize(name: string): string {
   return name.replace(/[^a-zA-Z0-9-]/g, "_").replace(/_+/g, "_");
 }
 
-export function getFilePath(row: PhotoRow): string {
+export function getFilePath(row: MediaRow): string {
   return join(
     OUTPUT_DIR,
     row.date,
@@ -21,7 +21,7 @@ export function getFilePath(row: PhotoRow): string {
 }
 
 export async function downloadRow(
-  row: PhotoRow,
+  row: MediaRow,
   index: number,
   total: number,
   env: EnvConfig,
