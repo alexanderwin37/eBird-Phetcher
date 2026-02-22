@@ -1,7 +1,6 @@
-import { existsSync } from "fs";
 import { loadEnv } from "./env.js";
 import { parseCSV } from "./csv.js";
-import { downloadRow, getFilePath } from "./download.js";
+import { downloadRow, fileAlreadyExists } from "./download.js";
 import { randomDelay } from "./delay.js";
 import { closeExiftool } from "./exif.js";
 import { MediaFormat } from "./types.js";
@@ -40,7 +39,7 @@ async function main(): Promise<void> {
         continue;
       }
 
-      if (existsSync(getFilePath(row))) {
+      if (fileAlreadyExists(row)) {
         console.log(
           `[${i + 1}/${rows.length}] Skipping (exists) ${row.commonName} ML${row.mlNumber}`,
         );
