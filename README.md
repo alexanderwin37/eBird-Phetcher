@@ -10,6 +10,10 @@ Fair warning: while I researched the overall approach for the script, Claude wro
 - Parses the CSV of your Macaulay Library media, line by line, to retrieve the media identifier
 - Makes a call to eBird's endpoint, using a session cookie for authentication
 - Fetches the media (image or sound recording) from the pre-signed S3 URL provided by eBird
+- Checks the metadata on the image and backfills the following fields if they are not already present (new metadata is based on the data from the associated checklist)
+  - Date
+  - Time
+  - Location (latitude and longitude)
 - Save the files to `./inout/photos` binned by the date on which the photo was taken
 
 Note: the script will only fetch the asset if it is not already present in the output folder. This allows for the script to pick up where it left off if it is aborted during execution.
@@ -23,4 +27,4 @@ Note: the script will only fetch the asset if it is not already present in the o
 - As of the time of writing, the media CSV exported from Macaulay only supports up to 10,000 rows
 
 ## Disclaimer 
-This script does not attempt to bypass authentication mechanisms and it should not be used except in good faith. 
+This script does not attempt to bypass authentication mechanisms, and it should be used only in good faith. 
